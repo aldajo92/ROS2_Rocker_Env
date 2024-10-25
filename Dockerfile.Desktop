@@ -1,0 +1,25 @@
+FROM osrf/ros:humble-desktop-full
+
+ENV ROS_DISTRO=humble
+ENV WS=/ros2_ws
+
+RUN apt update && apt install -y \
+  python3-shapely \
+  python3-yaml \
+  python3-requests \
+  python3-colcon-clean \
+  python3-pip \
+  python3-rosdep \
+  python3-vcstool \
+  python3-colcon-common-extensions
+
+RUN apt update && apt install -y \
+  ros-${ROS_DISTRO}-tf-transformations
+
+RUN mkdir -p ${WS}
+
+RUN echo "source /opt/ros/${ROS_DISTRO}/setup.bash" >> ~/.bashrc
+RUN echo "alias sros2='source /opt/ros/${ROS_DISTRO}/setup.bash ; source ${WS}/install/setup.bash'" >> ~/.bashrc
+RUN echo "alias bros2='cd ${WS} && colcon build'" >> ~/.bashrc
+
+ENTRYPOINT ["/ros_entrypoint.sh"]
